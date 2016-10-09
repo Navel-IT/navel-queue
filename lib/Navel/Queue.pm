@@ -21,7 +21,7 @@ sub new {
 
     $options{auto_clean} //= 0;
 
-    croak('auto_clean must be a positive integer') unless isint($options{auto_clean}) && $options{auto_clean} >= 0;
+    croak('auto_clean must be a positive integer') unless isint($options{auto_clean}) > 0;
 
     bless {
         auto_clean => $options{auto_clean},
@@ -47,7 +47,7 @@ sub dequeue {
     my @items;
 
     if (defined $size) {
-        croak('size must be a positive integer') unless isint($size) && $size >= 0;
+        croak('size must be a positive integer') unless isint($size) > 0;
 
         @items = splice @{$self->{items}}, 0, $size;
     } else {
