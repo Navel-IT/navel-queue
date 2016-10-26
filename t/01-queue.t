@@ -31,13 +31,13 @@ lives_ok {
     $queue->enqueue(1..$items * 2);
 } 'enqueue ' . $items . ' items';
 
-ok(@{$queue->{items}} == $items, 'check if enqueue() worked (' . @{$queue->{items}} . ' == ' . $items . ')');
+ok(@{$queue->{items}} == $items, 'check if enqueue worked (' . @{$queue->{items}} . ' == ' . $items . ')');
 
 lives_ok {
-    $queue->dequeue();
+    $queue->dequeue;
 } 'dequeue';
 
-ok(@{$queue->{items}} == 0, 'check if dequeue() worked (' . @{$queue->{items}} . ' == 0)');
+ok(@{$queue->{items}} == 0, 'check if dequeue worked (' . @{$queue->{items}} . ' == 0)');
 
 #-> END
 
