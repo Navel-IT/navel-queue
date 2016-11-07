@@ -23,7 +23,7 @@ my $items = 5;
 
 lives_ok {
     $queue = Navel::Queue->new(
-        auto_clean => $items
+        size => $items
     );
 } 'making the queue';
 

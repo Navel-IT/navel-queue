@@ -19,23 +19,33 @@ use Navel::Utils qw/
 sub new {
     my ($class, %options) = @_;
 
-    $options{auto_clean} //= 0;
+    $options{size} //= 0;
 
-    croak('auto_clean must be a positive integer') unless isint($options{auto_clean}) > 0;
+    croak('size must be a positive integer') unless isint($options{size}) > 0;
 
     bless {
-        auto_clean => $options{auto_clean},
+        size => $options{size},
         items => []
     }, ref $class || $class;
+}
+
+sub size_left {
+    my $self = shift;
+
+    $self->{size} ? $self->{size} - @{$self->{items}} : -1;
 }
 
 sub enqueue {
     my $self = shift;
 
-    for (@_) {
-        $self->dequeue(1) if $self->{auto_clean} && @{$self->{items}} >= $self->{auto_clean};
+    my $size_left = $self->size_left;
 
-        push @{$self->{items}}, $_;
+    if ($size_left < 0) {
+        push @{$self->{items}}, @_;
+    } else {
+        $self->dequeue($size_left ? @_ - @{$self->{items}} : scalar @_);
+
+        push @{$self->{items}}, @_[-$self->size_left..-1];
     }
 
     $self;
