@@ -40,12 +40,22 @@ sub enqueue {
 
     my $size_left = $self->size_left;
 
-    if ($size_left < 0) {
+    if ($size_left < 0 || $size_left >= @_) {
         push @{$self->{items}}, @_;
     } else {
-        $size_left += @{$self->dequeue($size_left ? @_ - @{$self->{items}} : scalar @_)};
+        my $to_splice;
 
-        push @{$self->{items}}, splice @_, - ($size_left > @_ ? @_ : $size_left);
+        if (@_ >= $self->{size}) {
+            $self->dequeue();
+
+            $to_splice = $self->{size};
+        } else {
+            $self->dequeue(@_ - $size_left);
+
+            $to_splice = $self->size_left;
+        }
+
+        push @{$self->{items}}, splice @_, -$to_splice;
     }
 
     $self;
